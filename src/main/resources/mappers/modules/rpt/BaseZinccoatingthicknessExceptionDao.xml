@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.rpt.dao.BaseZinccoatingthicknessExceptionDao">
+    
+	<sql id="baseZinccoatingthicknessExceptionColumns">
+		a.id AS "id",
+		a.logtime AS "logtime",
+		a.msvalue AS "msvalue",
+		a.loggroup AS "loggroup",
+		a.prodcode AS "prodcode",
+		a.gencode AS "gencode",
+		a.workmode AS "workmode",
+		a.bandwidth AS "bandwidth",
+		a.bandthickness AS "bandthickness",
+		a.linespeed AS "linespeed",
+		a.walklen AS "walklen",
+		a.zincrateunilateral AS "zincrateunilateral",
+		a.zincratetargetfront AS "zincratetargetfront",
+		a.zincratetargetreverse AS "zincratetargetreverse",
+		a.detectionpositionfront AS "detectionpositionfront",
+		a.detectionpositionreverse AS "detectionpositionreverse",
+		a.zincratefront AS "zincratefront",
+		a.zincratereverse AS "zincratereverse",
+		a.flag AS "flag",
+		a.zincratetargetfrontmaxval AS "zincratetargetfrontmaxval",
+		a.zincratetargetfrontminval AS "zincratetargetfrontminval",
+		a.zincratetargetfrontoffset AS "zincratetargetfrontoffset",
+		a.zincratetargetreversemaxval AS "zincratetargetreversemaxval",
+		a.zincratetargetreverseminval AS "zincratetargetreverseminval",
+		a.zincratetargetreverseoffset AS "zincratetargetreverseoffset"
+	</sql>
+	
+	<sql id="baseZinccoatingthicknessExceptionJoins">
+	</sql>
+    
+	<select id="get" resultType="BaseZinccoatingthicknessException">
+		SELECT 
+			<include refid="baseZinccoatingthicknessExceptionColumns"/>
+		FROM rpt_base_zinccoatingthickness_exception a
+		<include refid="baseZinccoatingthicknessExceptionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BaseZinccoatingthicknessException">
+		SELECT 
+			<include refid="baseZinccoatingthicknessExceptionColumns"/>
+		FROM rpt_base_zinccoatingthickness_exception a
+		<include refid="baseZinccoatingthicknessExceptionJoins"/>
+		<where>
+			
+			<if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+				AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+			</if>
+			<if test="loggroup != null and loggroup != ''">
+				AND a.loggroup = #{loggroup}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BaseZinccoatingthicknessException">
+		SELECT 
+			<include refid="baseZinccoatingthicknessExceptionColumns"/>
+		FROM rpt_base_zinccoatingthickness_exception a
+		<include refid="baseZinccoatingthicknessExceptionJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO rpt_base_zinccoatingthickness_exception(
+			id,
+			logtime,
+			msvalue,
+			loggroup,
+			prodcode,
+			gencode,
+			workmode,
+			bandwidth,
+			bandthickness,
+			linespeed,
+			walklen,
+			zincrateunilateral,
+			zincratetargetfront,
+			zincratetargetreverse,
+			detectionpositionfront,
+			detectionpositionreverse,
+			zincratefront,
+			zincratereverse,
+			flag,
+			zincratetargetfrontmaxval,
+			zincratetargetfrontminval,
+			zincratetargetfrontoffset,
+			zincratetargetreversemaxval,
+			zincratetargetreverseminval,
+			zincratetargetreverseoffset
+		) VALUES (
+			#{id},
+			#{logtime},
+			#{msvalue},
+			#{loggroup},
+			#{prodcode},
+			#{gencode},
+			#{workmode},
+			#{bandwidth},
+			#{bandthickness},
+			#{linespeed},
+			#{walklen},
+			#{zincrateunilateral},
+			#{zincratetargetfront},
+			#{zincratetargetreverse},
+			#{detectionpositionfront},
+			#{detectionpositionreverse},
+			#{zincratefront},
+			#{zincratereverse},
+			#{flag},
+			#{zincratetargetfrontmaxval},
+			#{zincratetargetfrontminval},
+			#{zincratetargetfrontoffset},
+			#{zincratetargetreversemaxval},
+			#{zincratetargetreverseminval},
+			#{zincratetargetreverseoffset}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE rpt_base_zinccoatingthickness_exception SET 	
+			logtime = #{logtime},
+			msvalue = #{msvalue},
+			loggroup = #{loggroup},
+			prodcode = #{prodcode},
+			gencode = #{gencode},
+			workmode = #{workmode},
+			bandwidth = #{bandwidth},
+			bandthickness = #{bandthickness},
+			linespeed = #{linespeed},
+			walklen = #{walklen},
+			zincrateunilateral = #{zincrateunilateral},
+			zincratetargetfront = #{zincratetargetfront},
+			zincratetargetreverse = #{zincratetargetreverse},
+			detectionpositionfront = #{detectionpositionfront},
+			detectionpositionreverse = #{detectionpositionreverse},
+			zincratefront = #{zincratefront},
+			zincratereverse = #{zincratereverse},
+			flag = #{flag},
+			zincratetargetfrontmaxval = #{zincratetargetfrontmaxval},
+			zincratetargetfrontminval = #{zincratetargetfrontminval},
+			zincratetargetfrontoffset = #{zincratetargetfrontoffset},
+			zincratetargetreversemaxval = #{zincratetargetreversemaxval},
+			zincratetargetreverseminval = #{zincratetargetreverseminval},
+			zincratetargetreverseoffset = #{zincratetargetreverseoffset}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM rpt_base_zinccoatingthickness_exception
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

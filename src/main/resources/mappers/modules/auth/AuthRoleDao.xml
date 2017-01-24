@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.auth.dao.AuthRoleDao">
+    
+	<sql id="authRoleColumns">
+		a.id AS "id",
+		a.authsys_id AS "authsysId",
+		a.code AS "code",
+		a.name AS "name",
+		a.enname AS "enname",
+		a.role_type AS "roleType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="authRoleJoins">
+		LEFT JOIN auth.sys_office o2 ON o2.id = a.authsys_id
+	</sql>
+    
+	<select id="get" resultType="AuthRole">
+		SELECT 
+			<include refid="authRoleColumns"/>
+		FROM auth.auth_role a
+		<include refid="authRoleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AuthRole">
+		SELECT 
+			<include refid="authRoleColumns"/>
+		FROM auth.auth_role a
+		<include refid="authRoleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="authsysId != null and authsysId != ''">
+				AND a.authsys_id = #{authsysId}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AuthRole">
+		SELECT 
+			<include refid="authRoleColumns"/>
+		FROM auth.auth_role a
+		<include refid="authRoleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO auth.auth_role(
+			id,
+			authsys_id,
+			code,
+			name,
+			enname,
+			role_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{authsysId},
+			#{code},
+			#{name},
+			#{enname},
+			#{roleType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE auth.auth_role SET 	
+			authsys_id = #{authsysId},
+			code = #{code},
+			name = #{name},
+			enname = #{enname},
+			role_type = #{roleType},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+        DELETE FROM auth.auth_role WHERE id = #{id}
+	</update>
+	
+	<insert id="assignUserToRole"   parameterType="java.util.List" >
+
+        INSERT INTO auth_user_role(
+        id,
+        user_id,
+        role_id,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        del_flag
+        ) VALUES
+    	<foreach collection="list" item="item"   separator=",">
+    		(#{item.id}, #{item.userid}, #{item.roleid},#{item.createBy.id},
+            #{item.createDate},#{item.updateBy.id},#{item.updateDate},#{item.remarks},
+            #{item.delFlag})
+    	</foreach>
+	</insert>
+	<delete id="outRole">
+		delete from auth_user_role WHERE user_id = #{userid} and role_id=#{roleid}
+	</delete>
+
+    <delete id="deleteUserRole">
+        delete from auth_user_role WHERE role_id=#{roleId} AND user_id in
+        <foreach collection="reduceList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="existRoleCode" parameterType="java.util.List" resultType="java.lang.Integer">
+        SELECT
+        COUNT(a.id)
+        FROM auth.auth_role a
+        WHERE
+            a.code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="findRoleCodeList" resultType="java.util.List">
+        select a.code
+        from auth.auth_role a,auth_user_role b
+        where b.user_id=#{userId} and b.role_id=a.id
+        <if test="sysCode != null and sysCode != ''">
+            AND a.authsys_id = (select c.id from auth_sys c where c.code=#{sysCode})
+        </if>
+    </select>
+
+    <select id="findRoleIdByCode" resultType="AuthRole">
+        select
+        <include refid="authRoleColumns"/>
+        from auth.auth_role a
+        where a.code in
+        <foreach collection="codeList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND a.authsys_id = (select c.id from auth_sys c where c.code=#{sysCode})
+    </select>
+
+    <select id="findUserRoleList" resultType="AuthRole">
+        SELECT
+        <include refid="authRoleColumns"/>
+        FROM auth.auth_role a
+        where a.id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.roleid}
+        </foreach>
+    </select>
+
+</mapper>

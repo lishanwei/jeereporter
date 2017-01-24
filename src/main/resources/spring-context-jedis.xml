@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:c="http://www.springframework.org/schema/c" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+			http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
+	<!-- 启用缓存注解功能，这个是必须的，否则注解不会生效，另外，该注解一定要声明在spring主配置文件中才会生效 -->
+ 	<!-- <cache:annotation-driven cache-manager="jedisCacheManager" /> -->
+
+	<!-- <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="connectionFactory" /> -->
+
+
+	<!-- spring自己的换管理器，这里定义了两个缓存位置名称 ，既注解中的value -->
+	<!-- <bean id="jedisCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager" c:template-ref="redisTemplate" /> -->
+</beans>

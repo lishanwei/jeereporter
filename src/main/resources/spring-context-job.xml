@@ -1,0 +1,91 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+    
+    <!-- demo TaskJob -->
+    <bean id="demoTaskJobBean"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject">
+            <ref bean="demoTaskJob" />
+        </property>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+     <!-- demo：每月 1号凌晨1点50分 执行 -->
+    <bean id="demoTaskJobTimer" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="demoTaskJobBean" />
+        </property>
+        <property name="cronExpression">
+             <value>0/5 * * * * ? </value>
+        </property>
+    </bean>
+    
+    <!-- 生成异常数据 TaskJob -->
+    <bean id="exceptionLogTaskJobBean"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject">
+            <ref bean="exceptionLogTaskJob" />
+        </property>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+     <!-- 每天凌晨1点1分执行生成前一天的异常数据 -->
+    <bean id="exceptionLogTaskJobTimer" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="exceptionLogTaskJobBean" />
+        </property>
+        <property name="cronExpression">
+             <value>0 1 1 * * ? </value>
+        </property>
+    </bean>
+    
+    <!-- 生成班组报表数据 TaskJob -->
+    <bean id="workteamReportTaskJobBean"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject">
+            <ref bean="workteamReportTaskJob" />
+        </property>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+     <!-- 每天凌晨0点1分执行生成前一天的班组报表数据 -->
+    <bean id="workteamReportTaskJobTimer" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="workteamReportTaskJobBean" />
+        </property>
+        <property name="cronExpression">
+             <value>0 1 0 * * ? </value>
+             <!-- <value>0/20 * * * * ? </value> -->
+        </property>
+    </bean>
+	
+	<bean id="startQuertz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- <ref bean="demoTaskJobTimer"/> -->
+				<ref bean="exceptionLogTaskJobTimer"/>
+				<ref bean="workteamReportTaskJobTimer"/>
+			</list>
+		</property>
+	</bean>
+</beans>

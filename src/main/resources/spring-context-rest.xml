@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+	        http://www.springframework.org/schema/beans   
+	            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+	        http://cxf.apache.org/jaxws   
+	            http://cxf.apache.org/schemas/jaxws.xsd
+	        http://cxf.apache.org/jaxrs 
+	            http://cxf.apache.org/schemas/jaxrs.xsd ">
+	<!-- Import Apache CXF Bean Definition -->
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-http-binding.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+
+    <!-- <bean id="userInfoOperServiceRest" class="com.thinkgem.jeesite.ws.impl.UserInfoOperServiceIRestmpl" ></bean> -->
+<!-- 
+	<jaxrs:server id="restContainer" address="/">
+ 		<jaxrs:serviceBeans>
+			<ref bean="userInfoOperServiceRest" />
+		</jaxrs:serviceBeans>
+		<jaxrs:inInterceptors>
+			<bean class="org.apache.cxf.interceptor.LoggingInInterceptor"></bean>
+		</jaxrs:inInterceptors>
+		<jaxrs:outInterceptors>
+			<bean class="org.apache.cxf.interceptor.LoggingOutInterceptor"></bean>
+		</jaxrs:outInterceptors>
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json" />
+			<entry key="xml" value="application/xml" />
+		</jaxrs:extensionMappings>
+	</jaxrs:server>
+ -->
+</beans>  

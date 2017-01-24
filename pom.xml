@@ -1,0 +1,1056 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mk</groupId>
+    <artifactId>auth</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>auth Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+
+    <!-- 项目属性 -->
+    <properties>
+
+        <!-- main version setting -->
+        <spring.version>4.0.8.RELEASE</spring.version>
+        <validator.version>5.1.1.Final</validator.version>
+        <mybatis.version>3.2.8</mybatis.version>
+        <mybatis-spring.version>1.2.2</mybatis-spring.version>
+        <druid.version>1.0.11</druid.version>
+        <ehcache.version>2.6.9</ehcache.version>
+        <ehcache-web.version>2.0.4</ehcache-web.version>
+        <shiro.version>1.2.3</shiro.version>
+        <sitemesh.version>2.4.2</sitemesh.version>
+        <activiti.version>5.15.1</activiti.version>
+        <!-- tools version setting -->
+        <slf4j.version>1.7.7</slf4j.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-codec.version>1.9</commons-codec.version>
+        <commons-fileupload.version>1.3.1</commons-fileupload.version>
+        <commons-beanutils.version>1.9.1</commons-beanutils.version>
+        <jackson.version>2.2.3</jackson.version>
+        <fastjson.version>1.1.40</fastjson.version>
+        <xstream.version>1.4.7</xstream.version>
+        <guava.version>17.0</guava.version>
+        <dozer.version>5.5.1</dozer.version>
+        <poi.version>3.9</poi.version>
+        <freemarker.version>2.3.20</freemarker.version>
+
+        <!-- jdbc driver setting -->
+        <mysql.driver.version>5.1.30</mysql.driver.version>
+        <oracle.driver.version>10.2.0.4.0</oracle.driver.version>
+        <mssql.driver.version>1.3.1</mssql.driver.version>
+
+        <!-- environment setting -->
+        <jdk.version>1.7</jdk.version>
+        <tomcat.version>2.2</tomcat.version>
+        <jetty.version>7.6.14.v20131031</jetty.version>
+        <webserver.port>8181</webserver.port>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <downloadSources>true</downloadSources>       
+    </properties>
+
+    <!-- 设定主仓库，按设定顺序进行查找。 -->
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>public</id>
+            <name>Public Repositories</name>
+            <url>http://172.18.11.236:8081/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://172.18.11.236:8081/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <!--<repository>-->
+            <!--<id>oschina-repos</id>-->
+            <!--<name>Oschina Releases</name>-->
+            <!--<url>http://maven.oschina.net/content/groups/public</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>java-repos</id>-->
+            <!--<name>Java Repository</name>-->
+            <!--<url>http://download.java.net/maven/2/</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>springsource-repos</id>-->
+            <!--<name>SpringSource Repository</name>-->
+            <!--<url>http://repo.spring.io/release/</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>central-repos</id>-->
+            <!--<name>Central Repository</name>-->
+            <!--<url>http://repo.maven.apache.org/maven2</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>central-repos2</id>-->
+            <!--<name>Central Repository 2</name>-->
+            <!--<url>http://repo1.maven.org/maven2/</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>activiti-repos</id>-->
+            <!--<name>Activiti Repository</name>-->
+            <!--<url>https://maven.alfresco.com/nexus/content/groups/public</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>activiti-repos2</id>-->
+            <!--<name>Activiti Repository 2</name>-->
+            <!--<url>https://app.camunda.com/nexus/content/groups/public</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>thinkgem-repos</id>-->
+            <!--<name>ThinkGem Repository</name>-->
+            <!--<url>http://git.oschina.net/thinkgem/repos/raw/master</url>-->
+        <!--</repository>-->
+
+        <!--<repository>-->
+            <!--<id>thinkgem-repos2</id>-->
+            <!--<name>ThinkGem Repository 2</name>-->
+            <!--<url>https://raw.github.com/thinkgem/repository/master</url>-->
+        <!--</repository>-->
+
+    </repositories>
+
+    <!-- 设定插件仓库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>public</id>
+            <name>Public Repositories</name>
+            <url>http://172.18.11.236:8081/nexus/content/groups/public/</url>
+        </pluginRepository>
+        <!--<pluginRepository>-->
+            <!--<id>oschina-repos</id>-->
+            <!--<name>Oschina Releases</name>-->
+            <!--<url>http://maven.oschina.net/content/groups/public</url>-->
+        <!--</pluginRepository>-->
+
+    </pluginRepositories>
+
+    <dependencies>
+    
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-reflect</artifactId>
+            <version>3.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>7.0.8</version>
+        </dependency>
+        <!-- SPRING begin -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- spring orm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- bean validate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${validator.version}</version>
+        </dependency>
+        <!-- SPRING end -->
+
+        <!-- AOP begin -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <!-- AOP end -->
+
+        <!-- PERSISTENCE begin -->
+
+        <!-- MyBatis -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis-spring.version}</version>
+        </dependency>
+
+        <!-- connection pool -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+
+        <!-- jdbc driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.driver.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+            <version>${oracle.driver.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>${mssql.driver.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- PERSISTENCE end -->
+
+        <!-- WEB begin -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>sitemesh</artifactId>
+            <version>${sitemesh.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-reflect</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+        <!-- CACHE begin -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-web</artifactId>
+            <version>${ehcache-web.version}</version>
+        </dependency>
+        <!-- CACHE end -->
+
+        <!-- SECURITY begin -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-cas</artifactId>
+            <version>${shiro.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jasig.cas.client</groupId>
+                    <artifactId>cas-client-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <!-- SECURITY end -->
+
+        <!-- Activiti -->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-engine</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-explorer</artifactId>
+            <version>${activiti.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>vaadin</artifactId>
+                    <groupId>com.vaadin</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>dcharts-widget</artifactId>
+                    <groupId>org.vaadin.addons</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>activiti-simple-workflow</artifactId>
+                    <groupId>org.activiti</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-modeler</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-diagram-rest</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+
+        <!-- LOGGING begin -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- common-logging 实际调用slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- java.util.logging 实际调用slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- LOGGING end -->
+
+        <!-- GENERAL UTILS begin -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons-fileupload.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- google java lib -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.3</version>
+        </dependency>
+
+        <!-- jackson json -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- xstream xml -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
+        </dependency>
+
+        <!-- pojo copy -->
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>${dozer.version}</version>
+        </dependency>
+
+        <!-- freemarker engine -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
+        <!-- email -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- poi office -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <!-- image util -->
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
+        <!-- 条形码、二维码生成  -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <!-- 中文分词 -->
+        <dependency>
+            <groupId>org.wltea</groupId>
+            <artifactId>analyzer</artifactId>
+            <version>2012_u6</version>
+        </dependency>
+        <!-- GENERAL UTILS end -->
+
+        <!-- CKFinder begin -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ckfinder</groupId>
+            <artifactId>apache-ant-zip</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ckfinder</groupId>
+            <artifactId>ckfinder</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ckfinder</groupId>
+            <artifactId>ckfinderplugin-fileeditor</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ckfinder</groupId>
+            <artifactId>ckfinderplugin-imageresize</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <!-- CKFinder end -->
+
+        <!-- TEST begin -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- http://mvnrepository.com/artifact/org.apache.geronimo.specs/geronimo-servlet_3.0_spec -->
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- TEST end -->
+
+        <!-- User Agent -->
+        <dependency>
+            <groupId>bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.5.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.5.0.RELEASE</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.7</version>
+        </dependency>
+
+        <!-- rest -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf</artifactId>
+            <version>2.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        
+        <!-- fastJson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.httpcomponents</groupId>-->
+            <!--<artifactId>httpclient</artifactId>-->
+            <!--<version>4.3.5</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.apache.httpcomponents</groupId>-->
+                    <!--<artifactId>httpcore</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dianping.cat</groupId>
+            <artifactId>cat-client</artifactId>
+            <version>1.3.6</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.jasig.cas.client</groupId>-->
+            <!--<artifactId>cas-client-core</artifactId>-->
+            <!--<version>3.2.1</version>-->
+        <!--</dependency>-->
+        
+<!--         
+        <dependency>
+            <groupId>com.lz</groupId>
+            <artifactId>lz-mongo</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fangbaba</groupId>
+          <artifactId>crmas-face</artifactId>
+          <version>0.0.5</version>
+        </dependency>
+ -->
+        <!-- https://mvnrepository.com/artifact/com.github.abel533/ECharts -->
+        <dependency>
+            <groupId>com.github.abel533</groupId>
+            <artifactId>ECharts</artifactId>
+            <version>3.0.0.1</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>auth</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes/</outputDirectory>
+
+        <plugins>
+            <!-- Compiler 插件, 设定JDK版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<encoding>UTF-8</encoding>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>jar</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<classesDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes/</classesDirectory>-->
+                            <!--<finalName>user</finalName>-->
+                            <!--<classifier></classifier>-->
+                            <!--<outputDirectory>target/auth/WEB-INF/lib</outputDirectory>-->
+                            <!--<includes>-->
+                                <!--<include>com/thinkgem/jeesite/ws/**</include>-->
+                            <!--</includes>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+            <!-- war 打包插件, 设定war包名称不带版本号 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <packagingExcludes>
+                        <!-- WEB-INF/classes/com/thinkgem/jeesite/** -->
+                        WEB-INF/classes/org/apache/ibatis/**,
+                        WEB-INF/classes/org/mybatis/spring/**
+                    </packagingExcludes>
+                    <warSourceExcludes>
+                        static/bootstrap/2.3.1/docs/**,
+                        static/ckeditor/_samples/**,
+                        static/ckeditor/_source/**,
+                        static/ckfinder/_samples/**,
+                        static/ckfinder/help/**,
+                        static/compressor*/**,
+                        static/jquery-jbox/2.3/docs/**,
+                        static/jquery-jbox/2.3/Skins2/**,
+                        static/jquery-validation/1.11.0/demo/**,
+                        static/jquery-ztree/3.5.12/demo/**,
+                        static/My97DatePicker/docs/**,
+                        static/supcan/doc/**,
+                        static/SuperSlide/demo/**,
+                        static/treeTable/demo/**<!-- , -->
+                        <!-- userfiles/** --><!-- ,/**/*.jsp -->,
+                        test/**
+                    </warSourceExcludes>
+                    <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory><!--
+                    <webXml>${project.basedir}/target/jspweb.xml</webXml> -->
+                    <warName>${project.artifactId}</warName>
+                </configuration>
+            </plugin>
+
+            <!-- tomcat7插件 -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${tomcat.version}</version>
+                <configuration>
+                    <port>${webserver.port}</port>
+                    <path>/${project.artifactId}</path>
+                    <uriEncoding>${project.build.sourceEncoding}</uriEncoding>
+                </configuration>
+            </plugin>
+
+            <!-- resource插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- install插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+
+            <!-- clean插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+
+            <!-- ant插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+            </plugin>
+
+            <!-- dependency插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5.1</version>
+            </plugin>
+
+            <!--<plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.2.1.v20140609</version>
+                <configuration>
+                    <contextPath>/auth</contextPath>
+                    <scanIntervalSeconds>2</scanIntervalSeconds>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.bio.SocketConnector">
+                            <port>808</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <scanTargetPatterns>
+                        <scanTargetPattern>
+                            <directory>
+                                src/main/webapp/WEB-INF
+                            </directory>
+                            <excludes>
+                                <exclude>**/*.jsp</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*.properties</include>
+                                <include>*.xml</include>
+                                <include>**/*.xml</include>
+                            </includes>
+                        </scanTargetPattern>
+                        <scanTargetPattern>
+                            <directory>src/main/resources</directory>
+                            <includes>
+                                <include>*.properties</include>
+                                <include>*.xml</include>
+                            </includes>
+                        </scanTargetPattern>
+                    </scanTargetPatterns>
+                </configuration>
+            </plugin>-->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.2.1.v20140609</version>
+                <!--<configuration>
+                    <httpConnector>
+                        <port>8080</port>
+                    </httpConnector>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                </configuration>-->
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+
+            <properties>
+                <dataSource.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf8]]></dataSource.jdbc.url>
+                <dataSource.jdbc.username>root</dataSource.jdbc.username>
+                <dataSource.jdbc.password></dataSource.jdbc.password>
+                
+                <gds.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/demo?zeroDateTimeBehavior=convertToNull&characterEncoding=utf8]]></gds.jdbc.url>
+                <gds.jdbc.username>root</gds.jdbc.username>
+                <gds.jdbc.password></gds.jdbc.password>
+
+                <crm.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull]]></crm.jdbc.url>
+                <crm.jdbc.username>root</crm.jdbc.username>
+                <crm.jdbc.password></crm.jdbc.password>
+
+                <oms.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf8]]></oms.jdbc.url>
+                <oms.jdbc.username>root</oms.jdbc.username>
+                <oms.jdbc.password></oms.jdbc.password>
+
+                <logFile.path>../logs/jeesite/jeereporter.log</logFile.path>
+
+                <!-- mongo -->
+                <!-- 
+                <mongo.host> 192.168.0.34:27017</mongo.host>
+                <spring.redis.sentinel.master>mymaster</spring.redis.sentinel.master>
+                <spring.redis.sentinel.nodes>192.168.0.21:26379</spring.redis.sentinel.nodes>
+                <jedis.pool.maxidl>20</jedis.pool.maxidl>
+                <jedis.pool.minidl>8</jedis.pool.minidl>
+                <jedis.pool.maxtotal>500</jedis.pool.maxtotal>
+                 -->
+            </properties>
+        </profile>
+
+        <profile>
+            <id>demo</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <dataSource.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/auth?useUnicode=true&characterEncoding=utf8]]></dataSource.jdbc.url>
+                <dataSource.jdbc.username>root</dataSource.jdbc.username>
+                <dataSource.jdbc.password></dataSource.jdbc.password>
+                
+                <gds.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/auth?zeroDateTimeBehavior=convertToNull&characterEncoding=utf8]]></gds.jdbc.url>
+                <gds.jdbc.username>root</gds.jdbc.username>
+                <gds.jdbc.password></gds.jdbc.password>
+
+                <crm.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/auth?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull]]></crm.jdbc.url>
+                <crm.jdbc.username>root</crm.jdbc.username>
+                <crm.jdbc.password></crm.jdbc.password>
+
+                <oms.jdbc.url><![CDATA[jdbc:mysql://127.0.0.1:3306/auth?useUnicode=true&characterEncoding=utf8]]></oms.jdbc.url>
+                <oms.jdbc.username>root</oms.jdbc.username>
+                <oms.jdbc.password></oms.jdbc.password>
+
+                <logFile.path>../logs/jeesite/jeereporter.log</logFile.path>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>saas</id>
+            <properties>
+                <dataSource.jdbc.url><![CDATA[jdbc:mysql://192.168.1.11:3306/debd2b185c41049a794daafb32a78f9a6?useUnicode=true&characterEncoding=utf8]]></dataSource.jdbc.url>
+                <dataSource.jdbc.username>0b55c8a0-04be</dataSource.jdbc.username>
+                <dataSource.jdbc.password>6ae9c95d-5eb2</dataSource.jdbc.password>
+                
+                <gds.jdbc.url><![CDATA[jdbc:mysql://192.168.1.11:3306/debd2b185c41049a794daafb32a78f9a6?zeroDateTimeBehavior=convertToNull&characterEncoding=utf8]]></gds.jdbc.url>
+                <gds.jdbc.username>0b55c8a0-04be</gds.jdbc.username>
+                <gds.jdbc.password>6ae9c95d-5eb2</gds.jdbc.password>
+
+                <crm.jdbc.url><![CDATA[jdbc:mysql://192.168.1.11:3306/debd2b185c41049a794daafb32a78f9a6?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull]]></crm.jdbc.url>
+                <crm.jdbc.username>0b55c8a0-04be</crm.jdbc.username>
+                <crm.jdbc.password>6ae9c95d-5eb2</crm.jdbc.password>
+
+                <oms.jdbc.url><![CDATA[jdbc:mysql://192.168.1.11:3306/debd2b185c41049a794daafb32a78f9a6?useUnicode=true&characterEncoding=utf8]]></oms.jdbc.url>
+                <oms.jdbc.username>0b55c8a0-04be</oms.jdbc.username>
+                <oms.jdbc.password>6ae9c95d-5eb2</oms.jdbc.password>
+
+                <logFile.path>../logs/jeesite/jeereporter.log</logFile.path>
+            </properties>
+        </profile>
+        
+    </profiles>
+
+</project>

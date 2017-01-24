@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+    <!-- 具体的实现bean -->
+    <!-- <bean id="userInfoOperService" class="com.thinkgem.jeesite.ws.impl.UserInfoOperServiceImpl"/> -->
+    
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+    <!-- <dubbo:application name="auth"/> -->
+    
+    <!-- 使用zookeeper注册中心暴露服务地址 -->
+    <!--<dubbo:registry address="zookeeper://10.10.231.253,10.10.240.233:2181"/>-->
+    <!-- <dubbo:registry protocol="zookeeper" address="${ZK.URL}"/> -->
+    
+    <!-- 用dubbo协议暴露服务，端口-1表示自动获取一个可用端口，若是指定端口可写自己想要的端口号 -->
+    <!-- <dubbo:protocol name="dubbo" port="-1"/> -->
+    
+    <!-- 声明需要暴露的服务接口 -->
+    <!-- <dubbo:service interface="com.thinkgem.jeesite.ws.UserInfoOperService" ref="userInfoOperService"
+                   group="${office.dubbo.group.name}" version="1.0" timeout="10000" retries="0"/> -->
+                   
+    <!--<dubbo:monitor protocol="registry"></dubbo:monitor> -->
+</beans>

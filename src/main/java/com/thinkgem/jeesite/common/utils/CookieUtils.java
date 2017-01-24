@@ -1,0 +1,154 @@
+/**
+ * Copyright &copy; 2012-2014 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
+ */
+package com.thinkgem.jeesite.common.utils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Cookie工具类
+ * @author ThinkGem
+ * @version 2013-01-15
+ */
+public class CookieUtils {
+
+	/**
+	 * 设置 Cookie（生成时间为1天）
+	 * @param name 名称
+	 * @param value 值
+	 */
+	public static void setCookie(HttpServletResponse response, String name, String value) {
+		setCookie(response, name, value, 60*60*24);
+	}
+	
+	/**
+	 * 设置 Cookie
+	 * @param name 名称
+	 * @param value 值
+	 * @param maxAge 生存时间（单位秒）
+	 * @param uri 路径
+	 */
+	public static void setCookie(HttpServletResponse response, String name, String value, String path) {
+		setCookie(response, name, value, path, 60*60*24);
+	}
+	
+	/**
+	 * 设置 Cookie
+	 * @param name 名称
+	 * @param value 值
+	 * @param maxAge 生存时间（单位秒）
+	 * @param uri 路径
+	 */
+	public static void setCookie(HttpServletResponse response, String name, String value, int maxAge) {
+		setCookie(response, name, value, "/", maxAge);
+	}
+	
+	/**
+	 * 设置 Cookie
+	 * @param name 名称
+	 * @param value 值
+	 * @param maxAge 生存时间（单位秒）
+	 * @param uri 路径
+	 */
+	public static void setCookie(HttpServletResponse response, String name, String value, String path, int maxAge) {
+		Cookie cookie = new Cookie(name, null);
+		cookie.setPath(path);
+		cookie.setMaxAge(maxAge);
+		try {
+			cookie.setValue(URLEncoder.encode(value, "utf-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		response.addCookie(cookie);
+	}
+	
+	/**
+	 * 获得指定Cookie的值
+	 * @param name 名称
+	 * @return 值
+	 */
+	public static String getCookie(HttpServletRequest request, String name) {
+		return getCookie(request, null, name, false);
+	}
+	/**
+	 * 获得指定Cookie的值，并删除。
+	 * @param name 名称
+	 * @return 值
+	 */
+	public static String getCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+		return getCookie(request, response, name, true);
+	}
+	/**
+	 * 获得指定Cookie的值
+	 * @param request 请求对象
+	 * @param response 响应对象
+	 * @param name 名字
+	 * @param isRemove 是否移除
+	 * @return 值
+	 */
+	public static String getCookie(HttpServletRequest request, HttpServletResponse response, String name, boolean isRemove) {
+		String value = null;
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(name)) {
+					try {
+						value = URLDecoder.decode(cookie.getValue(), "utf-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+					if (isRemove) {
+						cookie.setMaxAge(0);
+						response.addCookie(cookie);
+					}
+				}
+			}
+		}
+		return value;
+	}
+	
+	/**
+	 * 从request中获得参数Map，并返回可读的Map
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> getParameterMap(HttpServletRequest request) {
+	    // 参数Map
+	    Map<String, Object> properties = request.getParameterMap();
+	    // 返回值Map
+	    Map<String, Object> returnMap = new HashMap<String, Object>();
+	    Iterator entries = properties.entrySet().iterator();
+	    Map.Entry entry;
+	    String name = "";
+	    String value = "";
+	    while (entries.hasNext()) {
+	        entry = (Map.Entry) entries.next();
+	        name = (String) entry.getKey();
+	        Object valueObj = entry.getValue();
+	        if(null == valueObj){
+	            value = "";
+	        }else if(valueObj instanceof String[]){
+	            String[] values = (String[])valueObj;
+	            for(int i=0;i<values.length;i++){
+	                value = values[i] + ",";
+	            }
+	            value = value.substring(0, value.length()-1);
+	        }else{
+	            value = valueObj.toString();
+	        }
+	        returnMap.put(name, value);
+	    }
+	    return returnMap;
+	}
+}

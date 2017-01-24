@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.auth.dao.AuthUserRoleDao">
+    
+	<sql id="authUserRoleColumns">
+		a.id AS "id",
+		a.user_id AS "userid",
+		a.role_id AS "roleid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+
+	<select id="get" resultType="AuthUserRole">
+		SELECT 
+			<include refid="authUserRoleColumns"/>
+		FROM auth.auth_user_role a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AuthUserRole">
+		SELECT 
+			<include refid="authUserRoleColumns"/>
+		FROM auth.auth_user_role a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userid != null and userid != ''">
+				AND a.user_id = #{userid}
+			</if>
+			<if test="roleid != null and roleid != ''">
+				AND a.role_id = #{roleid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AuthUserRole">
+		SELECT 
+			<include refid="authUserRoleColumns"/>
+		FROM auth.auth_user_role a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO auth.auth_user_role(
+			id,
+			user_id,
+			role_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userid},
+			#{roleid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE auth.auth_user_role SET 	
+			user_id = #{userid},
+			role_id = #{roleid},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE auth.auth_user_role SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+    <delete id="deleteUserRole" parameterType="java.lang.String">
+        DELETE FROM auth.auth_user_role
+        WHERE user_id=#{id}
+    </delete>
+
+    <insert id="insertList" parameterType="java.util.List">
+        INSERT INTO auth.auth_user_role(
+        id,
+        user_id,
+        role_id,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        del_flag
+        ) VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+            (
+            #{item.id},
+            #{item.userid},
+            #{item.roleid},
+            #{item.createBy.id},
+            #{item.createDate},
+            #{item.updateBy.id},
+            #{item.updateDate},
+            #{item.remarks},
+            #{item.delFlag}
+            )
+        </foreach>
+
+
+    </insert>
+
+    <delete id="deleteUserRoleRalations">
+        delete from auth.auth_user_role WHERE role_id in
+        <foreach collection="authRoleList" index="index" item="item1" open="(" separator="," close=")">
+            #{item1.id}
+        </foreach>
+        AND user_id in
+        <foreach collection="authUserList" index="index" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+    <select id="findListByAuthUser" resultType="AuthUserRole">
+        SELECT <include refid="authUserRoleColumns"/>
+        FROM auth.auth_user_role a
+        WHERE a.user_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </select>
+
+</mapper>

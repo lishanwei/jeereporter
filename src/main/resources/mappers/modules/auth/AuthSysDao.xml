@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.auth.dao.AuthSysDao">
+    
+	<sql id="authSysColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.master AS "master",
+		a.code AS "code",
+		a.create_by AS "createBy.id",
+		a.url AS "url",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="authSysJoins">
+	</sql>
+    
+	<select id="get" resultType="AuthSys">
+		SELECT 
+			<include refid="authSysColumns"/>
+		FROM auth.auth_sys a
+		<include refid="authSysJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AuthSys">
+		SELECT 
+			<include refid="authSysColumns"/>
+		FROM auth.auth_sys a
+		<include refid="authSysJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="master != null and master != ''">
+				AND a.master = #{master}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AuthSys">
+		SELECT 
+			<include refid="authSysColumns"/>
+		FROM auth.auth_sys a
+		<include refid="authSysJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO auth.auth_sys(
+			id,
+			name,
+			master,
+			code,
+			create_by,
+			url,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{master},
+			#{code},
+			#{createBy.id},
+			#{url},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE auth.auth_sys SET 	
+			name = #{name},
+			master = #{master},
+			code = #{code},
+			url = #{url},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+        DELETE FROM auth.auth_sys WHERE id = #{id}
+	</update>
+
+    <select id="existSysCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+        COUNT(a.id)
+        FROM auth.auth_sys a
+        <where>
+            a.code = #{sysCode}
+        </where>
+    </select>
+	
+</mapper>

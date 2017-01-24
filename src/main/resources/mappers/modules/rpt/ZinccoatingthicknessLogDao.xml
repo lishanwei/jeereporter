@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.rpt.dao.ZinccoatingthicknessLogDao">
+    
+    <sql id="zinccoatingthicknessLogColumns">
+        a.id AS "id",
+        CONCAT(a.logtime,'.', LPAD(a.msvalue,3,'0')) AS "logtime",
+        a.loggroup AS "loggroup",
+        a.prodcode AS "prodcode",
+        a.gencode AS "gencode",
+        a.workmode AS "workmode",
+        a.bandwidth AS "bandwidth",
+        a.bandthickness AS "bandthickness",
+        a.linespeed AS "linespeed",
+        a.walklen AS "walklen",
+        a.zincrateunilateral AS "zincrateunilateral",
+        a.zincratetargetfront AS "zincratetargetfront",
+        a.zincratetargetreverse AS "zincratetargetreverse",
+        a.detectionpositionfront AS "detectionpositionfront",
+        a.detectionpositionreverse AS "detectionpositionreverse",
+        a.zincratefront AS "zincratefront",
+        a.zincratereverse AS "zincratereverse",
+        a.flag AS "flag"
+    </sql>
+    
+    <sql id="zinccoatingthicknessLogWithAutoCodeColumns">
+        a.id AS "id",
+        a.logtime AS "logtime",
+        a.loggroup AS "loggroup",
+        a.prodcode AS "prodcode",
+        a.gencode AS "loggencode",
+        t1.gencode AS "gencode",
+        a.workmode AS "workmode",
+        a.bandwidth AS "bandwidth",
+        a.bandthickness AS "bandthickness",
+        a.linespeed AS "linespeed",
+        a.walklen AS "walklen",
+        a.zincrateunilateral AS "zincrateunilateral",
+        a.zincratetargetfront AS "zincratetargetfront",
+        a.zincratetargetreverse AS "zincratetargetreverse",
+        a.detectionpositionfront AS "detectionpositionfront",
+        a.detectionpositionreverse AS "detectionpositionreverse",
+        a.zincratefront AS "zincratefront",
+        a.zincratereverse AS "zincratereverse",
+        a.flag AS "flag"
+    </sql>
+
+    <sql id="zinccoatingworkteamReportColumns">
+        DATE_FORMAT(a.logtime, '%Y-%m-%d %h:%i:00') AS logtime,
+        a.loggroup AS 'loggroup',
+        a.loggroup AS 'loggroupname',
+        a.prodcode AS 'prodcode',
+        a.gencode AS 'gencode',
+        a.workmode AS 'workmode',
+        (CASE
+            WHEN a.workmode = 1 THEN '定点检测'
+            ELSE ''
+        END) AS workmodename,
+        AVG(a.bandwidth) AS 'bandwidth',
+        AVG(a.bandthickness) AS 'bandthickness',
+        AVG(a.linespeed) AS 'linespeed',
+        SUM(a.linespeed / 60 / 1000 * 100) AS 'totallen',
+        SUM(a.bandwidth * a.bandthickness * a.linespeed /60 /1000 * 100 * 7.9 / 1000000) AS totalsteel,
+        AVG(a.zincratetargetfront) AS zincratetargetfront, #正面目标上锌量
+        AVG(a.zincratetargetreverse) AS zincratetargetreverse, #反面目标上锌量
+        
+        SUM(zincratefront - zincratetargetfront) / (avg(a.bandwidth) * SUM(a.linespeed / 60 / 1000 * 100)) AS zincrateavgfront, #正面平米上锌量（克）
+        SUM(zincratereverse - zincratetargetreverse) / (avg(a.bandwidth) * SUM(a.linespeed / 60 / 1000 * 100)) AS zincrateavgreverse, #背面平米上锌量（克）
+        SUM((zincratefront - zincratetargetfront) + (zincratereverse - zincratetargetreverse)) AS zinctotalinc, #上锌总增总（千克）
+        SUM(zincratefront - zincratetargetfront) / 1000 AS zinctotalincfront, #正面上锌增重（千克）
+        SUM(zincratereverse - zincratetargetreverse) / 1000 AS zinctotalincreverse, #背面上锌增重（千克）
+        
+        SUM(a.zincratefront) AS zincratefront, #正面实时上锌量
+        SUM(a.zincratereverse) AS zincratereverse #反面实时上锌量
+    </sql>
+    <!-- 班组报表字段 -->
+    <sql id="workteamReportColumns">
+        a.logtime,
+        a.loggroup,
+        a.prodcode,
+        a.gencode,
+        a.workmode,
+        a.bandwidth,
+        a.bandthickness,
+        a.linespeed,
+        a.totallen,
+        a.totalsteel,
+        a.zincratetargetfront,
+        a.zincratetargetreverse,
+        a.zincrateavgfront,
+        a.zincrateavgreverse,
+        a.zinctotalinc,
+        a.zinctotalincfront,
+        a.zinctotalincreverse,
+        a.zincratefront,
+        a.zincratereverse
+    </sql>
+    
+    <!-- 周报表字段 -->
+    <sql id="zinccoatingweeklyReportColumns">
+        DATE_FORMAT(a.logtime, '%Y-%m-%d %h:00:00') AS logtime,
+        a.loggroup AS 'loggroup',
+        a.loggroup AS 'loggroupname',
+        COUNT(DISTINCT a.gencode) AS 'genqty',
+        SUM(a.totallen) AS 'totallen',
+        SUM(a.bandwidth * a.bandthickness * a.totallen * 7.9 / 1000000) AS totalsteel,
+        SUM(a.zincratefront+a.zincratereverse) as zincratetotal
+    </sql>
+    
+    <!-- 月报表字段 -->
+    <sql id="monthlyReportColumns">
+        DATE_FORMAT(a.logtime, '%Y-%m-%d') AS logtime,
+        a.loggroup AS 'loggroup',
+        a.loggroup AS 'loggroupname',
+        COUNT(DISTINCT a.gencode) AS 'genqty',
+        SUM(a.totallen) AS 'totallen',
+        SUM(a.bandwidth * a.bandthickness * a.totallen * 7.9 / 1000000) AS totalsteel,
+        sum(a.zincratefront+a.zincratereverse) as zincratetotal
+    </sql>
+    
+    <sql id="zinccoatingthicknessLogJoins">
+    </sql>
+    
+    <sql id="subqueryAutogencodeJoins">
+        LEFT JOIN (SELECT 
+            @rowno:=@rowno + 1 AS rowno, log.logtime,log.prodcode,log.flag, CONCAT(log.fixcode, LPAD(@rowno,3,'0')) gencode
+        FROM
+            (SELECT 
+                logtime, prodcode, flag, CONCAT('RS', DATE_FORMAT(logtime, '%y%m%d')) AS fixcode
+            FROM
+                rpt_base_zinccoatingthickness_log
+            WHERE
+                flag = 1
+            GROUP BY prodcode , flag
+            ORDER BY logtime ASC) log,
+            (SELECT @rowno:=0) t
+        ORDER BY rowno) t1
+    </sql>
+    
+    <!-- 实时数据列表 -->
+    <select id="queryList" resultType="ZinccoatingthicknessLog">
+        SELECT 
+            <include refid="zinccoatingthicknessLogWithAutoCodeColumns"/>
+        FROM rpt_base_zinccoatingthickness_log a
+        <include refid="subqueryAutogencodeJoins"/>
+          ON a.prodcode = t1.prodcode 
+        <where>
+            
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND a.loggroup = #{loggroup}
+            </if>
+            <if test="prodcode != null and prodcode != ''">
+                AND a.prodcode = #{prodcode}
+            </if>
+            <if test="gencode != null and gencode != ''">
+                AND a.gencode = #{gencode}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.logtime ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <!-- 锌层测厚班报表 -->
+    <select id="queryZinccoatingworkteamReport" resultType="ZinccoatingWorkTeamReport">
+        SELECT 
+            <include refid="workteamReportColumns"/>
+        FROM rpt_workteam a
+        <where>
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND a.loggroup = #{loggroup}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(a.logtime, '%Y-%m-%d %h:%i:00') , a.loggroup
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.logtime ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <!-- 锌层测厚周报表 -->
+    <select id="queryZinccoatingweeklyReport" resultType="ZinccoatingWeeklyReport">
+        SELECT 
+            <include refid="zinccoatingweeklyReportColumns"/>
+        FROM rpt_workteam a
+        <where>
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND a.loggroup = #{loggroup}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(a.logtime, '%Y-%m-%d %h:00:00') , a.loggroup
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.logtime ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <!-- 锌层测厚月报表 -->
+    <select id="queryZinccoatingmonthlyReport" resultType="ZinccoatingMonthlyReport">
+        SELECT 
+            <include refid="monthlyReportColumns"/>
+        FROM rpt_workteam a
+        <where>
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND a.loggroup = #{loggroup}
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(a.logtime, '%Y-%m-%d') , a.loggroup
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.logtime ASC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="get" resultType="ZinccoatingthicknessLog">
+        SELECT 
+            <include refid="zinccoatingthicknessLogColumns"/>
+        FROM rpt_base_zinccoatingthickness_log a
+        <include refid="zinccoatingthicknessLogJoins"/>
+        WHERE a.id = #{id}
+    </select>
+    
+    <select id="findList" resultType="ZinccoatingthicknessLog">
+        SELECT 
+            <include refid="zinccoatingthicknessLogColumns"/>
+        FROM rpt_base_zinccoatingthickness_log a
+        <where>
+            a.workmode='1'
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND a.loggroup = #{loggroup}
+            </if>
+            <if test="prodcode != null and prodcode != ''">
+                AND a.prodcode = #{prodcode}
+            </if>
+            <if test="gencode != null and gencode != ''">
+                AND a.gencode = #{gencode}
+            </if>
+            
+            <if test="maxOffsetFront != null or minOffsetFront != null or maxOffsetReverse != null or minOffsetReverse != null">
+            AND (
+            </if>
+                <if test="maxOffsetFront != null">
+                    a.zincratetargetfront - a.zincratefront <![CDATA[ >= #{maxOffsetFront} ]]>
+                </if>
+                <if test="minOffsetFront != null">
+                    or a.zincratetargetfront - a.zincratefront <![CDATA[ <= #{minOffsetFront} ]]>
+                </if>
+                <if test="maxOffsetReverse != null">
+                    or a.zincratetargetreverse - a.zincratereverse <![CDATA[ >= #{maxOffsetReverse} ]]>
+                </if>
+                <if test="minOffsetReverse != null">
+                    or a.zincratetargetreverse - a.zincratereverse <![CDATA[ <= #{minOffsetReverse} ]]>
+                </if>
+            <if test="maxOffsetFront != null or minOffsetFront != null or maxOffsetReverse != null or minOffsetReverse != null">
+            )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.logtime ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="findAllList" resultType="ZinccoatingthicknessLog">
+        SELECT 
+            <include refid="zinccoatingthicknessLogColumns"/>
+        FROM rpt_base_zinccoatingthickness_log a
+        <include refid="zinccoatingthicknessLogJoins"/>
+        <where>
+            
+        </where>        
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.logtime ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <!-- 生成异常数据 -->
+    <update id="delExceptionLog">
+        DELETE FROM rpt_base_zinccoatingthickness_exception
+        WHERE logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+    </update>
+    <insert id="batchInsertExceptionLog">
+		INSERT INTO rpt_base_zinccoatingthickness_exception(
+		logtime
+		,msvalue
+		,loggroup
+		,prodcode
+		,gencode
+		,workmode
+		,bandwidth
+		,bandthickness
+		,linespeed
+		,walklen
+		,zincrateunilateral
+		,zincratetargetfront
+		,zincratetargetreverse
+		,detectionpositionfront
+		,detectionpositionreverse
+		,zincratefront
+		,zincratereverse
+		,flag
+		,zincratetargetfrontmaxval
+		,zincratetargetfrontminval
+		,zincratetargetfrontoffset
+		,zincratetargetreversemaxval
+		,zincratetargetreverseminval
+		,zincratetargetreverseoffset
+		)
+		SELECT a.logtime
+		,a.msvalue
+		,a.loggroup
+		,a.prodcode
+		,a.gencode
+		,a.workmode
+		,a.bandwidth
+		,a.bandthickness
+		,a.linespeed
+		,a.walklen
+		,a.zincrateunilateral
+		,b.zincratetargetfront
+		,b.zincratetargetreverse
+		,a.detectionpositionfront
+		,a.detectionpositionreverse
+		,a.zincratefront
+		,a.zincratereverse
+		,a.flag
+		,b.zincratetargetfrontmaxval
+		,b.zincratetargetfrontminval
+		,a.zincratefront - b.zincratetargetfront as zincratetargetfrontoffset
+		,b.zincratetargetreversemaxval
+		,b.zincratetargetreverseminval
+		,a.zincratereverse - b.zincratetargetreverse  as zincratetargetreverseoffset
+		FROM rpt_base_zinccoatingthickness_log a LEFT JOIN rpt_base_zinccoatingthickness_config b ON 1=1
+		  WHERE a.workmode='1'  AND a.logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+		    AND (a.zincratefront &gt; b.zincratetargetfrontmaxval OR a.zincratefront &lt; b.zincratetargetfrontminval
+		        OR a.zincratereverse &gt; b.zincratetargetreversemaxval OR a.zincratereverse &lt; zincratetargetreverseminval)
+		    AND b.configname='debug'
+    </insert>
+    
+    <!-- 生成班组报表数据 -->
+    <update id="delWorkteamReport">
+        DELETE FROM rpt_workteam
+        WHERE logtime between #{beginLogtime} and #{endLogtime}
+    </update>
+    <insert id="batchInsertWorkteamReportData">
+        insert into rpt_workteam(
+        logtime,
+        loggroup,
+        prodcode,
+        gencode,
+        workmode,
+        bandwidth,
+        bandthickness,
+        linespeed,
+        totallen,
+        totalsteel,
+        zincratetargetfront,
+        zincratetargetreverse,
+        zincrateavgfront,
+        zincrateavgreverse,
+        zinctotalinc,
+        zinctotalincfront,
+        zinctotalincreverse,
+        zincratefront,
+        zincratereverse
+        )
+        select
+                DATE_FORMAT(a.logtime, '%Y-%m-%d %h:%i:00') AS logtime,
+                a.loggroup,
+                a.prodcode,
+                a.gencode,
+                a.workmode,
+                AVG(a.bandwidth) AS 'bandwidth',
+                AVG(a.bandthickness) AS 'bandthickness',
+                AVG(a.linespeed) AS 'linespeed',
+                SUM(a.linespeed / 60 / 1000 * 100) AS 'totallen',
+                SUM(a.bandwidth * a.bandthickness * a.linespeed /60 /1000 * 100 * 7.9 / 1000000) AS totalsteel,
+                avg(a.zincratetargetfront) AS zincratetargetfront,
+                avg(a.zincratetargetreverse) AS zincratetargetreverse,
+                sum(zincratefront - zincratetargetfront) / (avg(a.bandwidth) * SUM(a.linespeed / 60 / 1000 * 100)) AS zincrateavgfront,
+                sum(zincratereverse - zincratetargetreverse) / (avg(a.bandwidth) * SUM(a.linespeed / 60 / 1000 * 100)) AS zincrateavgreverse,
+                sum((zincratefront - zincratetargetfront) + (zincratereverse - zincratetargetreverse)) AS zinctotalinc,
+                sum(zincratefront - zincratetargetfront) / 1000 AS zinctotalincfront,
+                sum(zincratereverse - zincratetargetreverse) / 1000 AS zinctotalincreverse,
+                sum(a.zincratefront) AS zincratefront,
+                sum(a.zincratereverse) AS zincratereverse
+        from rpt_base_zinccoatingthickness_log a
+        where a.logtime between #{beginLogtime} and #{endLogtime}
+        GROUP BY DATE_FORMAT(a.logtime, '%Y-%m-%d %h:%i:00') , a.loggroup, a.prodcode, a.gencode, a.workmode
+    </insert>
+    
+    <insert id="insert">
+        INSERT INTO rpt_base_zinccoatingthickness_log(
+            id,
+            logtime,
+            loggroup,
+            prodcode,
+            gencode,
+            workmode,
+            bandwidth,
+            bandthickness,
+            linespeed,
+            walklen,
+            zincrateunilateral,
+            detectionpositionfront,
+            detectionpositionreverse,
+            zincratefront,
+            zincratereverse
+        ) VALUES (
+            #{id},
+            #{logtime},
+            #{loggroup},
+            #{prodcode},
+            #{gencode},
+            #{workmode},
+            #{bandwidth},
+            #{bandthickness},
+            #{linespeed},
+            #{walklen},
+            #{zincrateunilateral},
+            #{detectionpositionfront},
+            #{detectionpositionreverse},
+            #{zincratefront},
+            #{zincratereverse}
+        )
+    </insert>
+    
+    <update id="update">
+        UPDATE rpt_base_zinccoatingthickness_log SET     
+            logtime = #{logtime},
+            loggroup = #{loggroup},
+            prodcode = #{prodcode},
+            gencode = #{gencode},
+            workmode = #{workmode},
+            bandwidth = #{bandwidth},
+            bandthickness = #{bandthickness},
+            linespeed = #{linespeed},
+            walklen = #{walklen},
+            zincrateunilateral = #{zincrateunilateral},
+            detectionpositionfront = #{detectionpositionfront},
+            detectionpositionreverse = #{detectionpositionreverse},
+            zincratefront = #{zincratefront},
+            zincratereverse = #{zincratereverse}
+        WHERE id = #{id}
+    </update>
+    
+    <update id="delete">
+        DELETE FROM rpt_base_zinccoatingthickness_log
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 查询班报图表数据 -->
+    <select id="queryWorkteamReportEChartData" resultType="map" parameterType="map">
+		SELECT CASE
+        WHEN loggroup is null or loggroup = '' THEN '未知班组'
+        ELSE loggroup
+        END loggroup, sum(totalsteel) as totalsteel, sum(zinctotalinc) as zinctotalinc
+		  FROM rpt_workteam
+		  <where>
+            workmode='1'
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND loggroup = #{loggroup}
+            </if>
+            <if test="prodcode != null and prodcode != ''">
+                AND prodcode = #{prodcode}
+            </if>
+            <if test="gencode != null and gencode != ''">
+                AND gencode = #{gencode}
+            </if>
+          </where>
+		  GROUP BY CASE
+            WHEN loggroup is null or loggroup = '' THEN '未知班组'
+            ELSE loggroup
+            END 
+          ORDER BY CASE
+            WHEN loggroup='甲班' THEN 1
+            WHEN loggroup='乙班' THEN 2
+            ELSE 3
+            END
+    </select>
+    
+    <!-- 查询周报图表数据 -->
+    <select id="queryWeeklyReportEChartData" resultType="map" parameterType="map">
+		SELECT CASE
+        WHEN gencode is null or gencode = '' THEN '未知产品'
+        ELSE gencode
+        END gencode, sum(totalsteel) as totalsteel, sum(zinctotalinc) as zinctotalinc
+		  FROM rpt_workteam
+		  <where>
+            workmode='1'
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND loggroup = #{loggroup}
+            </if>
+            <if test="prodcode != null and prodcode != ''">
+                AND prodcode = #{prodcode}
+            </if>
+            <if test="gencode != null and gencode != ''">
+                AND gencode = #{gencode}
+            </if>
+          </where>
+		  GROUP BY CASE
+          WHEN gencode is null or gencode = '' THEN '未知产品'
+          ELSE gencode
+          END 
+          ORDER BY gencode
+    </select>
+
+    <!-- 查询月报图表数据 -->
+    <select id="queryMonthlyReportEChartData" resultType="map" parameterType="map">
+		SELECT CASE
+        WHEN gencode is null or gencode = '' THEN '未知产品'
+        ELSE gencode
+        END gencode, sum(totalsteel) as totalsteel, sum(zinctotalinc) as zinctotalinc
+		  FROM rpt_workteam
+		  <where>
+            workmode='1'
+            <if test="beginLogtime != null and endLogtime != null and beginLogtime != '' and endLogtime != ''">
+                AND logtime BETWEEN #{beginLogtime} AND #{endLogtime}
+            </if>
+            <if test="loggroup != null and loggroup != ''">
+                AND loggroup = #{loggroup}
+            </if>
+            <if test="prodcode != null and prodcode != ''">
+                AND prodcode = #{prodcode}
+            </if>
+            <if test="gencode != null and gencode != ''">
+                AND gencode = #{gencode}
+            </if>
+          </where>
+		  GROUP BY CASE
+          WHEN gencode is null or gencode = '' THEN '未知产品'
+          ELSE gencode
+          END 
+          ORDER BY gencode
+    </select>    
+</mapper>

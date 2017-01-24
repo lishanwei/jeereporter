@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.rpt.dao.BaseZinccoatingthicknessConfigDao">
+    
+	<sql id="baseZinccoatingthicknessConfigColumns">
+		a.id AS "id",
+		a.configname AS "configname",
+		a.zincratetargetfront AS "zincratetargetfront",
+		a.zincratetargetfrontmaxval AS "zincratetargetfrontmaxval",
+		a.zincratetargetfrontminval AS "zincratetargetfrontminval",
+		a.zincratetargetreverse AS "zincratetargetreverse",
+		a.zincratetargetreversemaxval AS "zincratetargetreversemaxval",
+		a.zincratetargetreverseminval AS "zincratetargetreverseminval",
+		a.createtime AS "createtime",
+		a.createuser AS "createuser",
+		a.updatetime AS "updatetime",
+		a.updateuser AS "updateuser"
+	</sql>
+	
+	<sql id="baseZinccoatingthicknessConfigJoins">
+	</sql>
+    
+	<select id="get" resultType="BaseZinccoatingthicknessConfig">
+		SELECT 
+			<include refid="baseZinccoatingthicknessConfigColumns"/>
+		FROM rpt_base_zinccoatingthickness_config a
+		<include refid="baseZinccoatingthicknessConfigJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BaseZinccoatingthicknessConfig">
+		SELECT 
+			<include refid="baseZinccoatingthicknessConfigColumns"/>
+		FROM rpt_base_zinccoatingthickness_config a
+		<include refid="baseZinccoatingthicknessConfigJoins"/>
+		<where>
+			
+			<if test="configname != null and configname != ''">
+				AND a.configname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{configname}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{configname}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{configname},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BaseZinccoatingthicknessConfig">
+		SELECT 
+			<include refid="baseZinccoatingthicknessConfigColumns"/>
+		FROM rpt_base_zinccoatingthickness_config a
+		<include refid="baseZinccoatingthicknessConfigJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO rpt_base_zinccoatingthickness_config(
+			id,
+			configname,
+			zincratetargetfront,
+			zincratetargetfrontmaxval,
+			zincratetargetfrontminval,
+			zincratetargetreverse,
+			zincratetargetreversemaxval,
+			zincratetargetreverseminval,
+			createtime,
+			createuser,
+			updatetime,
+			updateuser
+		) VALUES (
+			#{id},
+			#{configname},
+			#{zincratetargetfront},
+			#{zincratetargetfrontmaxval},
+			#{zincratetargetfrontminval},
+			#{zincratetargetreverse},
+			#{zincratetargetreversemaxval},
+			#{zincratetargetreverseminval},
+			#{createtime},
+			#{createuser},
+			#{updatetime},
+			#{updateuser}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE rpt_base_zinccoatingthickness_config SET 	
+			configname = #{configname},
+			zincratetargetfront = #{zincratetargetfront},
+			zincratetargetfrontmaxval = #{zincratetargetfrontmaxval},
+			zincratetargetfrontminval = #{zincratetargetfrontminval},
+			zincratetargetreverse = #{zincratetargetreverse},
+			zincratetargetreversemaxval = #{zincratetargetreversemaxval},
+			zincratetargetreverseminval = #{zincratetargetreverseminval},
+			createtime = #{createtime},
+			createuser = #{createuser},
+			updatetime = #{updatetime},
+			updateuser = #{updateuser}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM rpt_base_zinccoatingthickness_config
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
